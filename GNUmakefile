@@ -97,23 +97,23 @@ init:
 ##	:
 all: install build generate
 .PHONY:install
-##	:	install			npm install
+##	:	install			yarn install
 install:
-	@npm install
-	@npm run postinstall
-	@cd ./public && npm install
+	@yarn install
+	@yarn run postinstall
+	@cd ./public && yarn install
 .PHONY:build
-##	:	build			npm run build
+##	:	build			yarn run build
 build:
-	npm run build
+	yarn run build
 .PHONY:generate
-##	:	generate		npm run generate
+##	:	generate		yarn run generate
 ##	:
 generate:
 	@rm -rf .output/public/node_modules/global-agent/node_modules/.bin/
 	@rm -rf .output/public/node_modules/semver/
 #	@rm -f .output/public/node_modules/global-agent/node_modules/.bin/semver
-	npm run generate
+	yarn run generate
 
 .PHONY:dev
 ##	:
@@ -137,12 +137,12 @@ clean-install:
 ##	:	electron			build electron
 electron: install generate
 	@echo
-	@cd ./public && npm run start
+	@cd ./public && yarn run start
 
 .PHONY: start
-##	:	start			npm run start
+##	:	start			yarn run start
 start:
-	@cd ./public && npm run start
+	@cd ./public && yarn run start
 
 ##	:	help
 help:
