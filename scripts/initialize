@@ -152,6 +152,7 @@ function npm-installs(){
 
 node -v
 npm -v
+npm install electron
 
 }
 
