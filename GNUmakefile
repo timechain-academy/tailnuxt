@@ -1,4 +1,4 @@
-
+all: install build generate
 
 install:
 	npm install
