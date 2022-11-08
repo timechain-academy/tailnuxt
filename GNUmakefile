@@ -24,7 +24,7 @@ export PROJECT_NAME
 
 ifeq ($(NODE_VERSION),)
 #NODE_VERSION									:= $(shell node --version)
-NODE_VERSION									:= 16
+NODE_VERSION									:= 18
 else
 NODE_VERSION									:= $(NODE_VERSION)
 endif
@@ -101,6 +101,7 @@ all: install build generate
 install:
 	@npm install
 	@npm run postinstall
+	@cd ./public && npm install
 .PHONY:build
 ##	:	build			npm run build
 build:
@@ -109,6 +110,9 @@ build:
 ##	:	generate		npm run generate
 ##	:
 generate:
+	@rm -rf .output/public/node_modules/global-agent/node_modules/.bin/
+	@rm -rf .output/public/node_modules/semver/
+#	@rm -f .output/public/node_modules/global-agent/node_modules/.bin/semver
 	npm run generate
 
 .PHONY:dev
@@ -129,11 +133,16 @@ clean-install:
 
 
 
+.PHONY: electron
+##	:	electron			build electron
+electron: install generate
+	@echo
+	@cd ./public && npm run start
 
 .PHONY: start
 ##	:	start			npm run start
 start:
-	@cd ./app && npm run start
+	@cd ./public && npm run start
 
 ##	:	help
 help:

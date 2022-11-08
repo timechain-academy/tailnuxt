@@ -29,12 +29,12 @@ function checkbrew() {
             brew install git
         fi
         if ! hash node 2>/dev/null; then
-            brew install node@14
-						brew link --overwrite node@14
-						npm install npm@8
+            brew install node@18
+						brew link --overwrite node@18
+						#npm install npm@8
 				else
 						echo
-						npm install npm@8
+						#npm install npm@8
 						#npm install gulp gulp-watch q
         fi
 
