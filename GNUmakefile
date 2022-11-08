@@ -106,7 +106,7 @@ clean-install:
 .PHONY: start
 ##	:	start
 start:
-	@cd ./app && npm start
+	@cd ./app && npm run start
 
 ##	:	help
 help:
