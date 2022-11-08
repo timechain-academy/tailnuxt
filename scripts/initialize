@@ -33,7 +33,7 @@ function checkbrew() {
 						brew link --overwrite node@18
 						#npm install npm@8
 				else
-						echo
+						echo "local system node version " $(node -v)
 						#npm install npm@8
 						#npm install gulp gulp-watch q
         fi
@@ -152,7 +152,6 @@ function npm-installs(){
 
 node -v
 npm -v
-npm install electron
 
 }
 
