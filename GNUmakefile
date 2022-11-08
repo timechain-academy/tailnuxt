@@ -99,9 +99,9 @@ all: install build generate
 .PHONY:install
 ##	:	install			npm install
 install:
-	@npm install
-	@npm run postinstall
-	@cd ./public && npm install
+	@yarn install
+	@yarn run postinstall
+	@cd ./public && yarn install
 .PHONY:build
 ##	:	build			npm run build
 build:
