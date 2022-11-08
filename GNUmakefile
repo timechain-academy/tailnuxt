@@ -24,7 +24,7 @@ export PROJECT_NAME
 
 ifeq ($(NODE_VERSION),)
 #NODE_VERSION									:= $(shell node --version)
-NODE_VERSION									:= 14
+NODE_VERSION									:= 16
 else
 NODE_VERSION									:= $(NODE_VERSION)
 endif
@@ -87,24 +87,51 @@ export HOMEBREW_NO_ENV_HINTS
 	@echo "source ~/.bashrc"
 	@echo "source ~/.bash_profile"
 
-##	:	init
+##	:	init			initialize nvm environment
 init:
 #	@["$(shell $(SHELL))" == "/bin/zsh"] && zsh --emulate sh
-	@cd ./scripts && ./initialize
+	@./scripts/initialize
 
+.PHONY:all
+##	:	all			install build generate
+##	:
+all: install build generate
 .PHONY:install
-##	:	install - ./scripts npm install
+##	:	install			npm install
 install:
 	@npm install
-	@cd ./scripts && npm install
+	@npm run postinstall
+.PHONY:build
+##	:	build			npm run build
+build:
+	npm run build
+.PHONY:generate
+##	:	generate		npm run generate
+##	:
+generate:
+	npm run generate
+
+.PHONY:dev
+##	:
+##	:	dev			npm run dev
+dev:
+	npm run dev
+.PHONY:preview
+##	:	preview			npm run preview
+##	:
+preview:
+	npm run preview
+
 .PHONY:clean-install
-##	:	clean-install - ./scripts npm install
+##	:	clean-install			npm clean-install
 clean-install:
 	@npm clean-install
-	@cd ./scripts && npm clean-install
+
+
+
 
 .PHONY: start
-##	:	start
+##	:	start			npm run start
 start:
 	@cd ./app && npm run start
 
@@ -163,10 +190,6 @@ nvm:
 	@curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash || git pull -C $(HOME)/.nvm
 	@echo "-------- Restart your terminal!!!! ---------"
 
-.PHONY: all
-##	:	all			execute installer scripts
-all:- nvm init 
-
 .PHONY: docs readme index
 index: docs
 readme: docs
@@ -212,15 +235,3 @@ clean-all: clean clean-nvm clean-npm clean-usr-local-libs
 -include node.mk
 # vim: set noexpandtab:
 # vim: set setfiletype make
-all: install build generate
-
-postinstall:
-	npm run postinstall
-build:
-	npm run build
-dev:
-	npm run dev
-generate:
-	npm run generate
-preview:
-	npm run preview
