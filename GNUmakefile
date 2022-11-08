@@ -101,6 +101,7 @@ all: install build generate
 install:
 	@npm install
 	@npm run postinstall
+	@cd ./public && npm install
 .PHONY:build
 ##	:	build			npm run build
 build:
@@ -133,7 +134,7 @@ clean-install:
 .PHONY: start
 ##	:	start			npm run start
 start:
-	@cd ./app && npm run start
+	@cd ./public && npm run start
 
 ##	:	help
 help:
