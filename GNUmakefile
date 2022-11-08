@@ -97,6 +97,11 @@ init:
 install:
 	@npm install
 	@cd ./scripts && npm install
+.PHONY:clean-install
+##	:	clean-install - ./scripts npm install
+clean-install:
+	@npm clean-install
+	@cd ./scripts && npm clean-install
 
 .PHONY: start
 ##	:	start
