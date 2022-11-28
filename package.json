@@ -15,5 +15,7 @@
     "nuxt": "3.0.0-rc.12",
     "postcss": "^8.4.18"
   },
-  "dependencies": {}
+  "dependencies": {
+    "webpack": "^4.27.0"
+  }
 }
