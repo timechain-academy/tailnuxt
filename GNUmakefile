@@ -1,10 +1,13 @@
 # PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin
 SHELL									:= /bin/bash
 
-PWD										?= pwd_unknown
+PWD									?= pwd_unknown
 
 PREFIX									:=
 export PREFIX
+
+NVM_DIR								:=$(HOME)/.nvm
+export NVM_DIR
 
 #space:=
 #space+=
@@ -173,6 +176,7 @@ report:## report					environment args
 	@echo ' PROJECT_NAME=${PROJECT_NAME}	'
 	@echo ' NODE_VERSION=${NODE_VERSION}	'
 	@echo ' NODE_ALIAS=${NODE_ALIAS}	'
+	@echo ' NVM_DIR=${NVM_DIR}	'
 	@echo ' PYTHON=${PYTHON}'
 	@echo ' PYTHON2=${PYTHON2}'
 	@echo ' PYTHON3=${PYTHON3}'
