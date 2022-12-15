@@ -4,7 +4,7 @@ SHELL									:= /bin/bash
 PWD										?= pwd_unknown
 
 PREFIX									:=
-export PREFIX:=
+export PREFIX
 
 #space:=
 #space+=
