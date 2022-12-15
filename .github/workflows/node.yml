@@ -36,6 +36,9 @@ jobs:
     - run: sudo apt-get install libtool m4 make g++ autoconf # debian/ubuntu
     - run: |
         make
+    - run: |
         make report
+    - run: |
         make init
+    - run: |
         make install
