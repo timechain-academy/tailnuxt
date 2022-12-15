@@ -9,6 +9,58 @@ export PREFIX
 #space:=
 #space+=
 
+#v12.22.0/  30-Mar-2021 14:14
+#v12.22.1/  06-Apr-2021 19:58
+#v12.22.10/ 01-Feb-2022 20:24
+#v12.22.11/ 17-Mar-2022 23:30
+#v12.22.12/ 05-Apr-2022 12:21
+#v12.22.2/  01-Jul-2021 15:37
+#v12.22.3/  05-Jul-2021 15:55
+#v12.22.4/  29-Jul-2021 16:46
+#v12.22.5/  11-Aug-2021 16:30
+#v12.22.6/  31-Aug-2021 14:59
+#v12.22.7/  12-Oct-2021 15:21
+#v12.22.8/  16-Dec-2021 23:40
+#v12.22.9/  10-Jan-2022 23:15
+
+PYTHON                                  := $(shell which python)
+export PYTHON
+PYTHON2                                 := $(shell which python2)
+export PYTHON2
+PYTHON3                                 := $(shell which python3)
+export PYTHON3
+
+NODE_GYP_FORCE_PYTHON                   := $(shell which python)
+export NODE_GYP_FORCE_PYTHON
+
+PIP                                     := $(shell which pip)
+export PIP
+PIP2                                    := $(shell which pip2)
+export PIP2
+PIP3                                    := $(shell which pip3)
+export PIP3
+
+python_version_full := $(wordlist 2,4,$(subst ., ,$(shell python3 --version 2>&1)))
+python_version_major := $(word 1,${python_version_full})
+python_version_minor := $(word 2,${python_version_full})
+python_version_patch := $(word 3,${python_version_full})
+
+my_cmd.python.3 := $(PYTHON3) some_script.py3
+my_cmd := ${my_cmd.python.${python_version_major}}
+
+PYTHON_VERSION                         := ${python_version_major}.${python_version_minor}.${python_version_patch}
+PYTHON_VERSION_MAJOR                   := ${python_version_major}
+PYTHON_VERSION_MINOR                   := ${python_version_minor}
+
+NODE_VERSION							:=v14.18.0
+export NODE_VERSION
+NODE_ALIAS								:=v14.0.0
+export NODE_ALIAS
+PACKAGE_MANAGER							:=yarn
+export PACKAGE_MANAGER
+PACKAGE_INSTALL							:=add
+export PACKAGE_INSTALL
+
 # CURRENT_PATH := $(subst $(lastword $(notdir $(MAKEFILE_LIST))),,$(subst $(space),\$(space),$(shell realpath '$(strip $(MAKEFILE_LIST))')))
 # export CURRENT_PATH
 
@@ -27,8 +79,7 @@ endif
 export PROJECT_NAME
 
 ifeq ($(NODE_VERSION),)
-#NODE_VERSION									:= $(shell node --version)
-NODE_VERSION									:= 14
+NODE_VERSION									:= $(shell node --version)
 else
 NODE_VERSION									:= $(NODE_VERSION)
 endif
