@@ -215,7 +215,7 @@ nvm: executable ## nvm
 	@source ~/.bashrc && nvm alias $(NODE_ALIAS) $(NODE_VERSION)
 
 .PHONY: all
-all:- executable install init build ## all - executable install init build
+all:- clean rebuild ## all - clean rebuild
 	@echo "make release"
 	@echo "make start"
 
