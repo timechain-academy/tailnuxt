@@ -137,12 +137,7 @@ build:clean## build
 start:## start
 	$(PACKAGE_MANAGER) run start
 rebuild:clean## rebuild
-	@rm -rf $(find . -name package-lock.json)
-	@rm -rf $(find . -name yarn.lock)
-	@rm -rf $(find . -name node_modules)
-	@rm -rf ./scripts/node_modules/electron
-	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) electron@10
-	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) rebuild
+	$(PACKAGE_MANAGER) $(PACKAGE_INSTALL) rebuild
 burnthemall:## burnthemall - hard reset & build
 	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) burnthemall
 release:## release - build distribution
