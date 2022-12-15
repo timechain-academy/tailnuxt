@@ -20,7 +20,9 @@
   "dependencies": {
     "electron": "10",
     "rebuild": "^0.1.2",
+    "release": "^6.3.1",
     "vscode-languageclient": "^8.0.2",
     "webpack": "5"
-  }
+  },
+  "version": "v0.0.1"
 }
