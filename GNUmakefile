@@ -61,73 +61,77 @@ export GIT_REPO_NAME
 GIT_REPO_PATH							:= $(HOME)/$(GIT_REPO_NAME)
 export GIT_REPO_PATH
 
-HOMEBREW_BREW_GIT_REMOTE=$(strip $(THIS_DIR))brew# put your Git mirror of Homebrew/brew here
-export HOMEBREW_BREW_GIT_REMOTE
-
-HOMEBREW_CORE_GIT_REMOTE=$(strip $(THIS_DIR))homebrew-core# put your Git mirror of Homebrew/homebrew-core here
-export HOMEBREW_CORE_GIT_REMOTE
-
-BREW                                    := $(shell which brew)
-export BREW
-# BREW_PREFIX                             := $(shell brew --prefix)
-export BREW_PREFIX
-# BREW_CELLAR                             := $(shell brew --cellar)
-export BREW_CELLAR
-HOMEBREW_NO_ENV_HINTS                   :=false
-export HOMEBREW_NO_ENV_HINTS
-
-
-##make	:	command			description
 .ONESHELL:
-.PHONY:-
-.PHONY:	init
-.PHONY:	help
-.PHONY:	report
-.PHONY:	brew
 .SILENT:
-##	:
+-:## -
+	#NOTE: 2 hashes are detected as 1st column output with color
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?##/ {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
--: help
-	@echo "source ~/.bashrc"
-	@echo "source ~/.bash_profile"
-
-##	:	init
-init:
-#	@["$(shell $(SHELL))" == "/bin/zsh"] && zsh --emulate sh
-	@cd ./scripts && ./initialize
+init: clean ## init clean
+	yarn run initialize
 
 .PHONY:install
-##	:	install - ./scripts npm install
-install:
-	@npm install
-	@cd ./scripts && npm install
+install:init## - ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL)
+	@yarn install
+.PHONY:build
+build:clean## build
+	@rm -rf .output
+	@rm -rf .nuxt
+	#@$(PACKAGE_MANAGER) build
+	@$(PACKAGE_MANAGER) run build
+.PHONY:start
+start:## start
+	$(PACKAGE_MANAGER) run start
+rebuild:clean## rebuild
+	@rm -rf $(find . -name package-lock.json)
+	@rm -rf $(find . -name yarn.lock)
+	@rm -rf $(find . -name node_modules)
+	@rm -rf ./scripts/node_modules/electron
+	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) electron@10
+	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) rebuild
+burnthemall:## burnthemall - hard reset & build
+	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) burnthemall
+release:## release - build distribution
+	@cd ./scripts && $(PACKAGE_MANAGER) $(PACKAGE_INSTALL) release
 
-.PHONY: start
-##	:	start
-start:
-	@cd ./app && npm start
-
-##	:	help
-help:
+help:## help
 	@echo ''
+	#NOTE: 2 hashes are detected as 1st column output with color
 	@sed -n 's/^##ARGS//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 	# @sed -n 's/^.PHONY//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 	@sed -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
+	@sed -n 's/^# //p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/# /'
+	@sed -n 's/^## //p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/## /'
+	@sed -n 's/^### //p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/### /'
 	@echo ""
 	@echo ""
 	@echo ""
 	@echo "Useful Commands:"
 	@echo ""
-	@echo "gpg --output public.pgp --armor --export FINGERPRINT"
+	@echo "make install init build"
+	@echo "make start"
+	@echo "make release"
+	@echo ""
+	@echo ""
 
-##	:	report			environment args
-report:
+report:## report					environment args
 	@echo ''
 	@echo ' TIME=${TIME}	'
 	@echo ' CURRENT_PATH=${CURRENT_PATH}	'
 	@echo ' THIS_DIR=${THIS_DIR}	'
 	@echo ' PROJECT_NAME=${PROJECT_NAME}	'
 	@echo ' NODE_VERSION=${NODE_VERSION}	'
+	@echo ' NODE_ALIAS=${NODE_ALIAS}	'
+	@echo ' PYTHON=${PYTHON}'
+	@echo ' PYTHON2=${PYTHON2}'
+	@echo ' PYTHON3=${PYTHON3}'
+	@echo ' NODE_GYP_FORCE_PYTHON=${NODE_GYP_FORCE_PYTHON}'
+	@echo ' PYTHON_VERSION=${PYTHON_VERSION}'
+	@echo ' PYTHON_VERSION_MAJOR=${PYTHON_VERSION_MAJOR}'
+	@echo ' PYTHON_VERSION_MINOR=${PYTHON_VERSION_MINOR}'
+	@echo ' PIP=${PIP}'
+	@echo ' PIP2=${PIP2}'
+	@echo ' PIP3=${PIP3}'
 	@echo ' GIT_USER_NAME=${GIT_USER_NAME}	'
 	@echo ' GIT_USER_EMAIL=${GIT_USER_EMAIL}	'
 	@echo ' GIT_SERVER=${GIT_SERVER}	'
@@ -138,88 +142,69 @@ report:
 	@echo ' GIT_REPO_ORIGIN=${GIT_REPO_ORIGIN}	'
 	@echo ' GIT_REPO_NAME=${GIT_REPO_NAME}	'
 	@echo ' GIT_REPO_PATH=${GIT_REPO_PATH}	'
-	@echo ' BREW=${BREW}	'
-	@echo ' HOMEBREW_BREW_GIT_REMOTE=${HOMEBREW_BREW_GIT_REMOTE}	'
-	@echo ' HOMEBREW_CORE_REMOTE=${HOMEBREW_CORE_GIT_REMOTE}	'
-	@echo ' BREW_PREFIX=${BREW_PREFIX}	'
-	@echo ' BREW_CELLAR=${BREW_CELLAR}	'
-	@echo ' HOMEBREW_NO_ENV_HINTS=${HOMEBREW_NO_ENV_HINTS}	'
 
 #.PHONY:
 #phony:
 #	@sed -n 's/^.PHONY//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 
-
 .PHONY: command
-##	:	command		 	command sequence
-command:
+command: executable ## command		example
 	@echo "command sequence here..."
+
+.PHONY: executable
+executable: ## executable
+	chmod +x ./scripts/initialize
+.PHONY: exec
+exec: executable ## exec	make shell scripts executable
 
 .PHONY: nvm
 .ONESHELL:
-##	:	nvm		 	install node version manager
-nvm:
-	@curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash || git pull -C $(HOME)/.nvm
-	@echo "-------- Restart your terminal!!!! ---------"
+nvm: executable ## nvm
+	@curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash || git pull -C $(HOME)/.nvm && export NVM_DIR="$(HOME)/.nvm" && [ -s "$(NVM_DIR)/nvm.sh" ] && \. "$(NVM_DIR)/nvm.sh" && [ -s "$(NVM_DIR)/bash_completion" ] && \. "$(NVM_DIR)/bash_completion"  && nvm install $(NODE_VERSION) && nvm use $(NODE_VERSION)
+	@source ~/.bashrc && nvm alias $(NODE_ALIAS) $(NODE_VERSION)
 
 .PHONY: all
-##	:	all			execute installer scripts
-all:- nvm init 
-
-.PHONY: docs readme index
-index: docs
-readme: docs
-docs:
-	@echo 'docs'
-	bash -c "if pgrep MacDown; then pkill MacDown; fi"
-	bash -c "make help > $(PWD)/sources/COMMANDS.md"
-	bash -c 'cat $(PWD)/sources/HEADER.md                >  $(PWD)/README.md'
-	bash -c 'cat $(PWD)/sources/COMMANDS.md              >> $(PWD)/README.md'
-	bash -c 'cat $(PWD)/sources/FOOTER.md                >> $(PWD)/README.md'
-	#bash -c "if hash open 2>/dev/null; then open README.md; fi || echo failed to open README.md"
-	#brew install pandoc
-	bash -c "if hash pandoc 2>/dev/null; then echo; fi || brew install pandoc"
-	#bash -c 'pandoc -s README.md -o index.html  --metadata title="$(GH_USER_SPECIAL_REPO)" '
-	bash -c 'pandoc -s README.md -o index.html'
-	#bash -c "if hash open 2>/dev/null; then open README.md; fi || echo failed to open README.md"
-	git add --ignore-errors sources/*.md
-	git add --ignore-errors *.md
-	#git ls-files -co --exclude-standard | grep '\.md/$\' | xargs git
+all:- executable install init build ## all - executable install init build
+	@echo "make release"
+	@echo "make start"
 
 .PHONY: submodule submodules
-submodule: submodules
-submodules:
+submodule: submodules ## submodule
+submodules: ## submodules
 	git submodule update --init --recursive
 	git submodule foreach 'git fetch origin; git checkout $$(git rev-parse --abbrev-ref HEAD); git reset --hard origin/$$(git rev-parse --abbrev-ref HEAD); git submodule update --recursive; git clean -dfx'
 
 .PHONY: node
-node:
+node: ## node
 	$(MAKE) -f node.mk
 
-clean:
-	rm -rf ./node_modules/
-	rm -rf ./scripts/node_modules/
-clean-usr-local-libs:
-	rm -rf /usr/local/libs/node_modules/
-clean-nvm:
-	rm -rf $(HOME)/.nvm
-	$(MAKE) nvm
-clean-npm:
-	rm -rf $(HOME)/.npm
-clean-all: clean clean-nvm clean-npm clean-usr-local-libs
+.PHONY: venv
+venv:## create python3 virtualenv .venv
+	test -d .venv || $(PYTHON3) -m virtualenv .venv
+	( \
+	   source .venv/bin/activate; pip install -r requirements.txt; \
+	);
+	@echo "To activate (venv)"
+	@echo "try:"
+	@echo ". .venv/bin/activate"
+	@echo "or:"
+	@echo "make test-venv"
+##:	test-venv            source .venv/bin/activate; pip install -r requirements.txt;
+test-venv:## 	test virutalenv .venv
+	# insert test commands here
+	test -d .venv || $(PYTHON3) -m virtualenv .venv
+	( \
+	   source .venv/bin/activate; pip install -r requirements.txt; \
+	);
+
+clean: ## clean
+	@rm -rf .output
+	@rm -rf .nuxt
+clean-nvm: ## clean-nvm
+	@rm -rf ~/.nvm
+clean-all: clean clean-nvm ## clean-all
+	@rm -rf $(find . -name node_modules)
 
 -include node.mk
 # vim: set noexpandtab:
 # vim: set setfiletype make
-all: install build generate
-
-postinstall:
-	npm run postinstall
-build:
-	npm run build
-dev:
-	npm run dev
-generate:
-	npm run generate
-preview:
-	npm run preview
