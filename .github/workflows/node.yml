@@ -32,7 +32,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: app/package-lock.json
+        cache-dependency-path: node_modules
     - run: sudo apt-get install libtool m4 make g++ autoconf # debian/ubuntu
     - run: |
         make
